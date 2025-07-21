@@ -1,0 +1,12 @@
+🎉 CONGRATULATIONS! 🎉
+========================================
+
+You successfully deployed the example workload!
+
+Resources:
+----------
+🔗 Talos Linux: https://talos.dev
+🔗 Omni: https://omni.siderolabs.com
+🔗 Sidero Labs: https://siderolabs.com
+
+========================================

@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-workload
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: example-workload
+  template:
+    metadata:
+      labels:
+        app: example-workload
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: example-workload
+          image: ghcr.io/siderolabs/example-workload
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workload-proxy-example
+  namespace: default
+  annotations:
+    omni-kube-service-exposer.sidero.dev/port: "58080"
+    omni-kube-service-exposer.sidero.dev/label: Example
+    omni-kube-service-exposer.sidero.dev/prefix: example
+    omni-kube-service-exposer.sidero.dev/icon: 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
+spec:
+  selector:
+    app: example-workload
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

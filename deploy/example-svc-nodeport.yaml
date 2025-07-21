@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-workload
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: example-workload
+  template:
+    metadata:
+      labels:
+        app: example-workload
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: example-workload
+          image: ghcr.io/siderolabs/example-workload
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-workload
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: example-workload
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
